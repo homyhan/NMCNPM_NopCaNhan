@@ -41,53 +41,6 @@ function openTab(nameTab) {
 
 // ========================== Sản Phẩm ========================
 
-//CREATE PRODUCT
-// async function createProduct() {
-
-//     if (!checkValid()) return;
-//     mode="create";
-
-//     var id = domId("id").value;
-//     var name = domId("name").value;
-//     var price = +domId("price").value;
-//     var screen = domId("screen").value;
-//     var blackCamera = domId("blackCamera").value;
-//     var frontCamera = domId("frontCamera").value;
-//     var img = domId('img').value;
-//     var desc = domId("desc").value;
-//     var type = domId("type").value;
-
-//     if(type === "1"){
-//       type="iphone"
-//     }else if(type === "2"){
-//       type="samsung"
-//     }
-
-//     var product = new Product(
-//       name,
-//       price,
-//       screen,
-//       blackCamera,
-//       frontCamera,
-//       img,
-//       desc,
-//       type,
-//       id
-//     );
-
-//     var promise = productServices.createProduct(product);
-//     try {
-//       var res = await promise;
-
-//       fetchProductList();
-//     } catch (err) {
-//       console.log(err);
-//     }
-
-//     domId('form').reset();
-
-//   }
-
 async function fetchProductList() {
   productList = [];
   renderProduct();
