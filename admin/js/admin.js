@@ -137,6 +137,9 @@ function renderProduct(data) {
 // Thêm
 let previewSrc; // biến toàn cục lưu file ảnh đang thêm
 async function layThongTinSanPhamTuTable() {
+
+  if (!checkValid()) return;
+
   var khung = document.getElementById("khungThemSanPham");
   var tr = khung.getElementsByTagName("tr");
 
@@ -165,6 +168,11 @@ async function layThongTinSanPhamTuTable() {
   if (isNaN(price)) {
     alert("Giá phải là số nguyên");
     return false;
+  }
+  if(type === "1"){
+    type="iphone"
+  }else if(type === "2"){
+    type="samsung"
   }
 
   var prod = new Product(
@@ -232,6 +240,93 @@ function capNhatAnhSanPham(files, id) {
         reader.readAsDataURL(files[0]);
     }
 } 
+
+function required(val, config) {
+  if (val.length > 0) {
+    domId(config.errorId).innerHTML = "";
+    return true;
+  }
+  domId(config.errorId).innerHTML = "Vui long nhap gia tri";  
+  // console.log("vui long nhap gia tri");
+
+  return false;
+}
+
+function validRequiredForm(idFideld, idNotify) {
+  var valueInput = domId(idFideld).value;
+
+  var localCheck = required(valueInput, { errorId: idNotify });
+
+  return localCheck;
+}
+
+//pattern
+function pattern(val, config) {
+  if (config.regexp.test(val)) {
+    domId(config.errorId).innerHTML = "";
+    return true;
+  } else {
+    domId(config.errorId).innerHTML = config.main;
+    return false;
+  }
+}
+
+function requiredType() {
+  var valueInput = domId("type");
+  var notify = domId("notifyType");
+
+  if (valueInput.selectedIndex === 0) {
+    notify.innerHTML = "Vui lòng chọn kiểu";
+    return false;
+  } else {
+    notify.innerHTML = "";
+    return true;
+  }
+}
+
+function checkValid() {
+
+  var idRegexp = /(^[0-9]{1,8}$)+/g;
+  var nameRegexp = /([A-z]+)([0-9]*)+/g;
+  var priceRegexp = /(^[0-9])+/g;
+  var descRegexp = /^[a-zA-Z0-9 ]*$/;
+
+  var validId = validRequiredForm("maspThem", "notifyId") && 
+                pattern(domId("maspThem").value, {
+                errorId: "notifyId",
+                regexp: idRegexp,
+                main: "id phai co từ 1 - 3 kí tự số",
+              });;
+
+  var validName = validRequiredForm("name", "notifyName") &&
+                  pattern(domId("name").value, {
+                    errorId: "notifyName",
+                    regexp: nameRegexp,
+                    main: "Tên sản phẩm phải là chữ và có ít nhất 0 hoặc nhiều kí tự số",
+                  });
+
+  var validPrice = validRequiredForm("price", "notifyPrice") &&
+                    pattern(domId("price").value, {
+                      errorId: "notifyPrice",
+                      regexp: priceRegexp,
+                      main: "Giá sản phẩm phải là số dương",
+                    });
+
+  var validImg = validRequiredForm("img", "notifyImg");
+
+  var validDesc = validRequiredForm("desc", "notifyDescription") &&
+                  pattern(domId("desc").value, {
+                    errorId: "notifyDescription",
+                    regexp: descRegexp,
+                    main: "Mo ta chua ro rang",
+                  });
+
+  var validType = requiredType();
+
+  var valid = validId && validName && validPrice && validImg && validDesc && validType;
+  // var valid = validId && validName;
+  return valid;
+}
 
 window.onload = async function () {
   await fetchProductList();
