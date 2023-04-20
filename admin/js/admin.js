@@ -1,5 +1,9 @@
 // GLOBAL
 var productList = [];
+function domId(id) {
+  return document.getElementById(id);
+  
+}
 // ======================= Các Tab =========================
 function addEventChangeTab() {
   var sidebar = document.getElementsByClassName("sidebar")[0];
@@ -49,7 +53,7 @@ async function fetchProductList() {
 
   try {
     var res = await promise;
-    productList = mapProductList(res.data.products);
+    productList = mapProductList(res.data);
     console.log(res.data);
     renderProduct();
   } catch (err) {
@@ -68,9 +72,9 @@ function mapProductList(local) {
       oldProduct.price,
       oldProduct.description,
       oldProduct.quantity,
-      oldProduct.image,
+      
       oldProduct.type,
-
+      oldProduct.image,
       oldProduct.id
     );
     result.push(newProduct);
@@ -132,8 +136,8 @@ function renderProduct(data) {
 
 // Thêm
 let previewSrc; // biến toàn cục lưu file ảnh đang thêm
-function layThongTinSanPhamTuTable(id) {
-  var khung = document.getElementById(id);
+async function layThongTinSanPhamTuTable() {
+  var khung = document.getElementById("khungThemSanPham");
   var tr = khung.getElementsByTagName("tr");
 
   var masp = tr[1]
@@ -147,7 +151,7 @@ function layThongTinSanPhamTuTable(id) {
     .getElementsByTagName("input")[0].value;
   var image = tr[4]
     .getElementsByTagName("td")[1]
-    .getElementsByTagName("img")[0].src;
+    .getElementsByTagName("input")[0].value;
   var des = tr[5]
     .getElementsByTagName("td")[1]
     .getElementsByTagName("input")[0].value;
@@ -163,21 +167,28 @@ function layThongTinSanPhamTuTable(id) {
     return false;
   }
 
+  var prod = new Product(
+    name,
+    price,
+    des,
+    quantity,
+    type,
+    image,
+    masp
+  )
+
+  var promise = productServ.createProduct(prod);  
   try {
-    return {
-      id: masp,
-      type: type,
-      name: name,
-      image: previewSrc,
-      description: des,
-      price: price,
-      quantity: quantity,
-    };
-  } catch (e) {
-    alert("Lỗi: " + e.toString());
-    return false;
-  }
+    var res = await promise;
+   console.log("Res", res);
+   await fetchProductList();
+   document.getElementById("khungThemSanPham").style.transform = "scale(0)";
+  } catch (err) {
+    console.log(err);
+  }  
+  
 }
+
 async function themSanPham() {
   var newSp = layThongTinSanPhamTuTable("khungThemSanPham");
   if (!newSp) return;
@@ -195,9 +206,11 @@ async function themSanPham() {
   }
   // Them san pham vao list_product
   var promise = productServ.createProduct(newSp);
+
   console.log(newSp);
   try {
     var res = await promise;
+    console.log("res", res);
     await fetchProductList();
     alert('Thêm sản phẩm "' + newSp.name + '" thành công.');
     document.getElementById("khungThemSanPham").style.transform = "scale(0)";
