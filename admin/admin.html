@@ -105,76 +105,80 @@
         <div id="khungThemSanPham" class="overlay">
           <span
             class="close"
-            onclick="this.parentElement.style.transform = 'scale(0)';"
+            id="btnClose"
             >&times;</span
-          >
-          <table class="overlayTable table-outline table-content table-header">
-            <tr>
-              <th colspan="2">Thêm Sản Phẩm</th>
-            </tr>
-            <tr>
-              <td>Mã sản phẩm:</td>
-              <td><input type="text" id="maspThem" /><p id="notifyId"></p></td>
-            </tr>
-            <tr>
-              <td>Loại:</td>
-              <td>
-                <select id="type" class="form-select form-control" aria-label="Default select example">
-                  <option selected value="0">Type</option>
-                  <span id="optionType">
-                      <option value="1">Iphone</option>
-                      <option value="2">Samsung</option>
-                  </span>
-                  
-                  <!-- <option value="3">Three</option> -->
-                </select>
-                <p id="notifyType"></p>
-              </td>
-            </tr>
-            <tr>
-              <td>Tên sản phẩm:</td>
-              <td><input type="text" id="name"/><p id="notifyName"></p></td>
-            </tr>
-            <tr>
-              <td>Hình:</td>
-              <td>
-                <img class="hinhDaiDien" id="anhDaiDienSanPhamThem" src="" />
-                <input
-                  type="text"
-                  id="img"
-                />
-                <p id="notifyImg"></p>
-              </td>
-            </tr>
-            <!-- <tr>
-              <td>Hình:</td>
-              <td>
-                <img class="hinhDaiDien" id="anhDaiDienSanPhamThem" src="" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onchange="capNhatAnhSanPham(this.files, 'anhDaiDienSanPhamThem')"
-                />
-              </td>
-            </tr> -->
-            <tr>
-              <td>Mô tả:</td>
-              <td><input type="text" id="desc"/><p id="notifyDescription"></p></td>
-            </tr>
-            <tr>
-              <td>Giá tiền:</td>
-              <td><input type="text" id="price"/><p id="notifyPrice"></p></td>
-            </tr>
-            <tr>
-              <td>Số lượng:</td>
-              <td><input type="text" /></td>
-            </tr>
-            <tr>
-              <td colspan="2" class="table-footer">
-                <button onclick="layThongTinSanPhamTuTable()">THÊM</button>
-              </td>
-            </tr>
-          </table>
+          >          
+          <form id="form">
+            <table class="overlayTable table-outline table-content table-header">
+              <tr>
+                <th colspan="2">Thêm Sản Phẩm</th>
+              </tr>
+              <tr>
+                <td>Mã sản phẩm:</td>
+                <td><input type="text" id="maspThem" onblur="checkValidID()"/><p class="sp-error" id="notifyId"></p></td>
+              </tr>
+              <tr>
+                <td>Loại:</td>
+                <td>
+                  <select id="type" class="form-select form-control" onblur="requiredType()" aria-label="Default select example">
+                    <option selected value="0">Type</option>
+                    <span id="optionType">
+                        <option value="1">Iphone</option>
+                        <option value="2">Samsung</option>
+                    </span>
+                    
+                    <!-- <option value="3">Three</option> -->
+                  </select>
+                  <p class="sp-error" id="notifyType"></p>
+                </td>
+              </tr>
+              <tr>
+                <td>Tên sản phẩm:</td>
+                <td><input type="text" id="name" onblur="checkFullName()"/><p class="sp-error" id="notifyName"></p></td>
+              </tr>
+              <tr>
+                <td>Hình:</td>
+                <td>
+                  <img class="hinhDaiDien" id="anhDaiDienSanPhamThem" src="" />
+                  <input
+                    type="text"
+                    id="img"
+                    onblur="checkImg()"
+                  />
+                  <p class="sp-error" id="notifyImg"></p>
+                </td>
+              </tr>
+              <!-- <tr>
+                <td>Hình:</td>
+                <td>
+                  <img class="hinhDaiDien" id="anhDaiDienSanPhamThem" src="" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onchange="capNhatAnhSanPham(this.files, 'anhDaiDienSanPhamThem')"
+                  />
+                </td>
+              </tr> -->
+              <tr>
+                <td>Mô tả:</td>
+                <td><input type="text" id="desc" onblur="checkDesc()"/><p class="sp-error" id="notifyDescription"></p></td>
+              </tr>
+              <tr>
+                <td>Giá tiền:</td>
+                <td><input type="text" id="price" onblur="checkPrice()"/><p class="sp-error" id="notifyPrice"></p></td>
+              </tr>
+              <tr>
+                <td>Số lượng:</td>
+                <td><input type="text" id="quantity" onblur="checkQuantity()"/><p class="sp-error" id="notifyQuantity"></p></td>
+              </tr>
+              <tr>
+                <td colspan="2" class="table-footer">
+                  <button onclick="layThongTinSanPhamTuTable()">THÊM</button>
+                </td>
+              </tr>
+            </table>
+          </form>
+          
         </div>
 
         <div id="khungSuaSanPham" class="overlay"></div>

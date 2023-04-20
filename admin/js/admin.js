@@ -2,7 +2,6 @@
 var productList = [];
 function domId(id) {
   return document.getElementById(id);
-  
 }
 // ======================= Các Tab =========================
 function addEventChangeTab() {
@@ -72,7 +71,7 @@ function mapProductList(local) {
       oldProduct.price,
       oldProduct.description,
       oldProduct.quantity,
-      
+
       oldProduct.type,
       oldProduct.image,
       oldProduct.id
@@ -137,7 +136,6 @@ function renderProduct(data) {
 // Thêm
 let previewSrc; // biến toàn cục lưu file ảnh đang thêm
 async function layThongTinSanPhamTuTable() {
-
   if (!checkValid()) return;
 
   var khung = document.getElementById("khungThemSanPham");
@@ -148,7 +146,7 @@ async function layThongTinSanPhamTuTable() {
     .getElementsByTagName("input")[0].value;
   var type = tr[2]
     .getElementsByTagName("td")[1]
-    .getElementsByTagName("input")[0].value;
+    .getElementsByTagName("select")[0].value;
   var name = tr[3]
     .getElementsByTagName("td")[1]
     .getElementsByTagName("input")[0].value;
@@ -169,32 +167,23 @@ async function layThongTinSanPhamTuTable() {
     alert("Giá phải là số nguyên");
     return false;
   }
-  if(type === "1"){
-    type="iphone"
-  }else if(type === "2"){
-    type="samsung"
+  if (type === "1") {
+    type = "iphone";
+  } else if (type === "2") {
+    type = "samsung";
   }
 
-  var prod = new Product(
-    name,
-    price,
-    des,
-    quantity,
-    type,
-    image,
-    masp
-  )
+  var prod = new Product(name, price, des, quantity, type, image, masp);
 
-  var promise = productServ.createProduct(prod);  
+  var promise = productServ.createProduct(prod);
   try {
     var res = await promise;
-   console.log("Res", res);
-   await fetchProductList();
-   document.getElementById("khungThemSanPham").style.transform = "scale(0)";
+    console.log("Res", res);
+    await fetchProductList();
+    document.getElementById("khungThemSanPham").style.transform = "scale(0)";
   } catch (err) {
     console.log(err);
-  }  
-  
+  }
 }
 
 async function themSanPham() {
@@ -229,24 +218,28 @@ async function themSanPham() {
 
 // Cập nhật ảnh sản phẩm
 function capNhatAnhSanPham(files, id) {
-    const reader = new FileReader();
-    reader.addEventListener("load", function () {
-        // convert image file to base64 string
-        previewSrc = reader.result;
-        document.getElementById(id).src = previewSrc;
-    }, false);
+  const reader = new FileReader();
+  reader.addEventListener(
+    "load",
+    function () {
+      // convert image file to base64 string
+      previewSrc = reader.result;
+      document.getElementById(id).src = previewSrc;
+    },
+    false
+  );
 
-    if (files[0]) {
-        reader.readAsDataURL(files[0]);
-    }
-} 
+  if (files[0]) {
+    reader.readAsDataURL(files[0]);
+  }
+}
 
 function required(val, config) {
   if (val.length > 0) {
     domId(config.errorId).innerHTML = "";
     return true;
   }
-  domId(config.errorId).innerHTML = "Vui long nhap gia tri";  
+  domId(config.errorId).innerHTML = "Vui long nhap gia tri";
   // console.log("vui long nhap gia tri");
 
   return false;
@@ -284,53 +277,136 @@ function requiredType() {
   }
 }
 
-function checkValid() {
+function checkValidID() {
+  var idRegexp = /(^[0-9]{1,8}$)+/g;
+  var validId =
+    validRequiredForm("maspThem", "notifyId") &&
+    pattern(domId("maspThem").value, {
+      errorId: "notifyId",
+      regexp: idRegexp,
+      main: "id phai co từ 1 - 3 kí tự số",
+    });
+  return validId;
+}
 
+function checkFullName() {
+  var nameRegexp = /([A-z]+)([0-9]*)+/g;
+  var validName =
+    validRequiredForm("name", "notifyName") &&
+    pattern(domId("name").value, {
+      errorId: "notifyName",
+      regexp: nameRegexp,
+      main: "Tên sản phẩm phải là chữ và có ít nhất 0 hoặc nhiều kí tự số",
+    });
+  return validName;
+}
+
+function checkPrice() {
+  var priceRegexp = /(^[0-9])+/g;
+  var validPrice =
+  validRequiredForm("price", "notifyPrice") &&
+  pattern(domId("price").value, {
+    errorId: "notifyPrice",
+    regexp: priceRegexp,
+    main: "Giá sản phẩm phải là số dương",
+  });
+  return validPrice;
+}
+function checkDesc() {
+  var descRegexp = /^[a-zA-Z0-9 ]*$/;
+  var validDesc =
+    validRequiredForm("desc", "notifyDescription") &&
+    pattern(domId("desc").value, {
+      errorId: "notifyDescription",
+      regexp: descRegexp,
+      main: "Mo ta chua ro rang",
+    });
+    return validDesc;
+}
+function checkImg() {
+  var validImg = validRequiredForm("img", "notifyImg");
+  return validImg;
+}
+function checkQuantity() {
+  var quantityRegexp = /(^[0-9])+/g;
+  var validQuantity =
+    validRequiredForm("quantity", "notifyQuantity") &&
+    pattern(domId("quantity").value, {
+      errorId: "notifyQuantity",
+      regexp: quantityRegexp,
+      main: "Giá sản phẩm phải là số dương",
+    });
+  return validQuantity;
+}
+function checkValid() {
   var idRegexp = /(^[0-9]{1,8}$)+/g;
   var nameRegexp = /([A-z]+)([0-9]*)+/g;
   var priceRegexp = /(^[0-9])+/g;
+  var quantityRegexp = /(^[0-9])+/g;
   var descRegexp = /^[a-zA-Z0-9 ]*$/;
 
-  var validId = validRequiredForm("maspThem", "notifyId") && 
-                pattern(domId("maspThem").value, {
-                errorId: "notifyId",
-                regexp: idRegexp,
-                main: "id phai co từ 1 - 3 kí tự số",
-              });;
+  var validId =
+    validRequiredForm("maspThem", "notifyId") &&
+    pattern(domId("maspThem").value, {
+      errorId: "notifyId",
+      regexp: idRegexp,
+      main: "id phai co từ 1 - 3 kí tự số",
+    });
 
-  var validName = validRequiredForm("name", "notifyName") &&
-                  pattern(domId("name").value, {
-                    errorId: "notifyName",
-                    regexp: nameRegexp,
-                    main: "Tên sản phẩm phải là chữ và có ít nhất 0 hoặc nhiều kí tự số",
-                  });
+  var validName =
+    validRequiredForm("name", "notifyName") &&
+    pattern(domId("name").value, {
+      errorId: "notifyName",
+      regexp: nameRegexp,
+      main: "Tên sản phẩm phải là chữ và có ít nhất 0 hoặc nhiều kí tự số",
+    });
 
-  var validPrice = validRequiredForm("price", "notifyPrice") &&
-                    pattern(domId("price").value, {
-                      errorId: "notifyPrice",
-                      regexp: priceRegexp,
-                      main: "Giá sản phẩm phải là số dương",
-                    });
+  var validPrice =
+    validRequiredForm("price", "notifyPrice") &&
+    pattern(domId("price").value, {
+      errorId: "notifyPrice",
+      regexp: priceRegexp,
+      main: "Giá sản phẩm phải là số dương",
+    });
+  var validQuantity =
+    validRequiredForm("quantity", "notifyQuantity") &&
+    pattern(domId("quantity").value, {
+      errorId: "notifyQuantity",
+      regexp: quantityRegexp,
+      main: "Số lượng phải là số dương",
+    });
 
   var validImg = validRequiredForm("img", "notifyImg");
 
-  var validDesc = validRequiredForm("desc", "notifyDescription") &&
-                  pattern(domId("desc").value, {
-                    errorId: "notifyDescription",
-                    regexp: descRegexp,
-                    main: "Mo ta chua ro rang",
-                  });
+  var validDesc =
+    validRequiredForm("desc", "notifyDescription") &&
+    pattern(domId("desc").value, {
+      errorId: "notifyDescription",
+      regexp: descRegexp,
+      main: "Mo ta chua ro rang",
+    });
 
   var validType = requiredType();
 
-  var valid = validId && validName && validPrice && validImg && validDesc && validType;
+  var valid =
+    validId && validName && validPrice && validImg && validDesc && validType && validQuantity;
   // var valid = validId && validName;
   return valid;
 }
 
 window.onload = async function () {
   await fetchProductList();
-  var productListFromLocal = getProductCartList();
-  // cart = mapProductCartList(productListFromLocal);
+  var productListFromLocal = getProductCartList();  
   console.log("productList", productList);
 };
+
+
+domId('btnClose').addEventListener('click', function(){
+  domId('khungThemSanPham').style.transform = "scale(0)";
+  domId('form').reset();
+  var arrError = document.getElementsByClassName("sp-error");
+  for (let i = 0; i < arrError.length; i++) {
+    arrError[i].innerHTML="";
+    
+  }
+})
