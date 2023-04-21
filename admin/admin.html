@@ -161,7 +161,7 @@
               </tr> -->
               <tr>
                 <td>Mô tả:</td>
-                <td><input type="text" id="desc" onblur="checkDesc()"/><p class="sp-error" id="notifyDescription"></p></td>
+                <td><textarea rows="6" type="text" id="desc" onblur="checkDesc()"></textarea><p class="sp-error" id="notifyDescription"></p></td>
               </tr>
               <tr>
                 <td>Giá tiền:</td>
@@ -173,7 +173,7 @@
               </tr>
               <tr>
                 <td colspan="2" class="table-footer">
-                  <button onclick="layThongTinSanPhamTuTable()">THÊM</button>
+                  <button id="btnSubmit" >THÊM</button>
                 </td>
               </tr>
             </table>

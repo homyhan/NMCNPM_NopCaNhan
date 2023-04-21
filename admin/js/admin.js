@@ -135,7 +135,9 @@ function renderProduct(data) {
 
 // Thêm
 let previewSrc; // biến toàn cục lưu file ảnh đang thêm
-async function layThongTinSanPhamTuTable() {
+
+domId("btnSubmit").addEventListener('click', async function (e) {
+  e.preventDefault();
   if (!checkValid()) return;
 
   var khung = document.getElementById("khungThemSanPham");
@@ -155,7 +157,7 @@ async function layThongTinSanPhamTuTable() {
     .getElementsByTagName("input")[0].value;
   var des = tr[5]
     .getElementsByTagName("td")[1]
-    .getElementsByTagName("input")[0].value;
+    .getElementsByTagName("textarea")[0].value;
   var price = tr[6]
     .getElementsByTagName("td")[1]
     .getElementsByTagName("input")[0].value;
@@ -184,7 +186,7 @@ async function layThongTinSanPhamTuTable() {
   } catch (err) {
     console.log(err);
   }
-}
+})
 
 async function themSanPham() {
   var newSp = layThongTinSanPhamTuTable("khungThemSanPham");
