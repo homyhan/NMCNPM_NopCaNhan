@@ -43,7 +43,7 @@ function openTab(nameTab) {
 }
 
 // ========================== Sản Phẩm ========================
-
+// fetch api
 async function fetchProductList() {
   productList = [];
   renderProduct();
@@ -60,7 +60,7 @@ async function fetchProductList() {
   } finally {
   }
 }
-
+// map dữ liệu từ api
 function mapProductList(local) {
   var result = [];
 
@@ -71,7 +71,6 @@ function mapProductList(local) {
       oldProduct.price,
       oldProduct.description,
       oldProduct.quantity,
-
       oldProduct.type,
       oldProduct.image,
       oldProduct.id
@@ -81,21 +80,7 @@ function mapProductList(local) {
 
   return result;
 }
-
-// LẤY DỮ LIỆU TỪ LOCALHOST
-function getProductCartList() {
-  var productListJson = localStorage.getItem("PL");
-  if (!productListJson) return [];
-  // console.log(JSON.parse(productListJson));
-  return JSON.parse(productListJson);
-}
-
-function saveProductCartList() {
-  var productListJson = JSON.stringify(cart);
-  console.log(cart);
-  localStorage.setItem("PL", productListJson);
-}
-
+//render ra dữ liệu ra table
 function renderProduct(data) {
   data = data || productList;
 
@@ -133,9 +118,8 @@ function renderProduct(data) {
   tc.innerHTML = s;
 }
 
-// Thêm
+// Thêm sản phẩm mới
 let previewSrc; // biến toàn cục lưu file ảnh đang thêm
-
 domId("btnSubmit").addEventListener('click', async function (e) {
   e.preventDefault();
   if (!checkValid()) return;
@@ -188,35 +172,6 @@ domId("btnSubmit").addEventListener('click', async function (e) {
   }
 })
 
-async function themSanPham() {
-  var newSp = layThongTinSanPhamTuTable("khungThemSanPham");
-  if (!newSp) return;
-
-  for (var p of productList) {
-    if (p.id == newSp.id) {
-      alert("Mã sản phẩm bị trùng !!");
-      return false;
-    }
-
-    if (p.name == newSp.name) {
-      alert("Tên sản phẩm bị trùng !!");
-      return false;
-    }
-  }
-  // Them san pham vao list_product
-  var promise = productServ.createProduct(newSp);
-
-  console.log(newSp);
-  try {
-    var res = await promise;
-    console.log("res", res);
-    await fetchProductList();
-    alert('Thêm sản phẩm "' + newSp.name + '" thành công.');
-    document.getElementById("khungThemSanPham").style.transform = "scale(0)";
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 // Cập nhật ảnh sản phẩm
 function capNhatAnhSanPham(files, id) {
@@ -241,8 +196,7 @@ function required(val, config) {
     domId(config.errorId).innerHTML = "";
     return true;
   }
-  domId(config.errorId).innerHTML = "Vui long nhap gia tri";
-  // console.log("vui long nhap gia tri");
+  domId(config.errorId).innerHTML = "Vui long nhap gia tri"; 
 
   return false;
 }
@@ -398,7 +352,7 @@ function checkValid() {
 
 window.onload = async function () {
   await fetchProductList();
-  var productListFromLocal = getProductCartList();  
+  
   console.log("productList", productList);
 };
 
