@@ -138,7 +138,7 @@ domId("btnSubmit").addEventListener('click', async function (e) {
     .getElementsByTagName("input")[0].value;
   var image = tr[4]
     .getElementsByTagName("td")[1]
-    .getElementsByTagName("input")[0].value;
+    .getElementsByTagName("input")[0].src;
   var des = tr[5]
     .getElementsByTagName("td")[1]
     .getElementsByTagName("textarea")[0].value;
@@ -159,7 +159,7 @@ domId("btnSubmit").addEventListener('click', async function (e) {
     type = "samsung";
   }
 
-  var prod = new Product(name, price, des, quantity, type, image, masp);
+  var prod = new Product(name, price, des, quantity, type, previewSrc, masp);
 
   var promise = productServ.createProduct(prod);
   try {

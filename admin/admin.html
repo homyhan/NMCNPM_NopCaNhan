@@ -141,9 +141,11 @@
                 <td>
                   <img class="hinhDaiDien" id="anhDaiDienSanPhamThem" src="" />
                   <input
-                    type="text"
+                    type="file"
                     id="img"
+                    accept="image/*"
                     onblur="checkImg()"
+                    onchange="capNhatAnhSanPham(this.files, 'anhDaiDienSanPhamThem')"
                   />
                   <p class="sp-error" id="notifyImg"></p>
                 </td>
