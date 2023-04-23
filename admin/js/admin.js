@@ -106,7 +106,7 @@ function renderProduct(data) {
                     <span class="tooltiptext">Sửa</span>
                 </div>
                 <div class="tooltip">
-                    <i class="fa fa-trash" onclick="xoaSanPham('${data[i].id}', '+p.name+')"></i>
+                    <i class="fa fa-trash" onclick="xoaSanPham(${data[i].id}, '${data[i].name}')"></i>
                     <span class="tooltiptext">Xóa</span>
                 </div>
             </td>
@@ -188,6 +188,24 @@ function capNhatAnhSanPham(files, id) {
 
   if (files[0]) {
     reader.readAsDataURL(files[0]);
+  }
+}
+// Hàm xóa sản phẩm với id và tên sản phẩm được truyền vào
+async function xoaSanPham(id, name) {
+  try {
+    // Hiển thị hộp thoại xác nhận xóa sản phẩm
+    if (window.confirm('Bạn có chắc muốn xóa ' + name)) {
+      // Gửi yêu cầu xóa sản phẩm tới API mock
+      const response = await axios.delete(`https://63e677b27eef5b223386ae8a.mockapi.io/phones/${id}`);
+      console.log(response.data);
+      // Sau khi xóa thành công, cập nhật lại danh sách sản phẩm
+      await fetchProductList();
+      // Hiển thị thông báo xóa sản phẩm thành công
+      alert(`Đã xóa sản phẩm ${name} thành công.`);
+    }
+  } catch (error) {
+    // Nếu có lỗi xảy ra, hiển thị thông báo lỗi trên console
+    console.error(error);
   }
 }
 
@@ -355,7 +373,6 @@ window.onload = async function () {
   
   console.log("productList", productList);
 };
-
 
 domId('btnClose').addEventListener('click', function(){
   domId('khungThemSanPham').style.transform = "scale(0)";
