@@ -171,6 +171,7 @@ domId("btnSubmit").addEventListener('click', async function (e) {
     document.getElementById("khungThemSanPham").style.transform = "scale(0)";
   } catch (err) {
     console.log(err);
+    alert("Lỗi");
   }
 })
 
