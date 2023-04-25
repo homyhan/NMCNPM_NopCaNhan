@@ -167,6 +167,7 @@ domId("btnSubmit").addEventListener('click', async function (e) {
     var res = await promise;
     console.log("Res", res);
     await fetchProductList();
+    await alert("Thêm sản phẩm thành công");
     document.getElementById("khungThemSanPham").style.transform = "scale(0)";
   } catch (err) {
     console.log(err);
