@@ -158,9 +158,10 @@ domId("btnSubmit").addEventListener('click', async function (e) {
   } else if (type === "2") {
     type = "samsung";
   }
-
+  //tạo ra obj với thuộc tính có giá trị đã điền
   var prod = new Product(name, price, des, quantity, type, previewSrc, masp);
 
+  //call api truyền dữ liệu obj được tạo vào
   var promise = productServ.createProduct(prod);
   try {
     var res = await promise;
@@ -173,7 +174,7 @@ domId("btnSubmit").addEventListener('click', async function (e) {
 })
 
 
-// Cập nhật ảnh sản phẩm
+// Cập nhật ảnh sản phẩm review
 function capNhatAnhSanPham(files, id) {
   const reader = new FileReader();
   reader.addEventListener(
@@ -209,6 +210,7 @@ async function xoaSanPham(id, name) {
   }
 }
 
+//validate: bắt buộc nhập giá trị
 function required(val, config) {
   if (val.length > 0) {
     domId(config.errorId).innerHTML = "";
@@ -218,16 +220,14 @@ function required(val, config) {
 
   return false;
 }
-
+//validate: bắt buộc nhập giá trị
 function validRequiredForm(idFideld, idNotify) {
   var valueInput = domId(idFideld).value;
-
   var localCheck = required(valueInput, { errorId: idNotify });
-
   return localCheck;
 }
 
-//pattern
+//validate: theo từng loại: val (giá trị của element), config (obj thể hiện lỗi)
 function pattern(val, config) {
   if (config.regexp.test(val)) {
     domId(config.errorId).innerHTML = "";
@@ -238,6 +238,7 @@ function pattern(val, config) {
   }
 }
 
+// validate: kiểm tra đã chọn loại của sản phẩm hay chưa
 function requiredType() {
   var valueInput = domId("type");
   var notify = domId("notifyType");
@@ -251,6 +252,7 @@ function requiredType() {
   }
 }
 
+//kiểm tra ô mã sản phẩm
 function checkValidID() {
   var idRegexp = /(^[0-9]{1,8}$)+/g;
   var validId =
@@ -263,6 +265,7 @@ function checkValidID() {
   return validId;
 }
 
+//kiểm tra ô fullName
 function checkFullName() {
   var nameRegexp = /([A-z]+)([0-9]*)+/g;
   var validName =
@@ -275,6 +278,7 @@ function checkFullName() {
   return validName;
 }
 
+//kiểm tra ô giá
 function checkPrice() {
   var priceRegexp = /(^[0-9])+/g;
   var validPrice =
@@ -286,6 +290,7 @@ function checkPrice() {
   });
   return validPrice;
 }
+//kiểm tra ô mô tả
 function checkDesc() {
   var descRegexp = /^[a-zA-Z0-9 ]*$/;
   var validDesc =
@@ -297,10 +302,12 @@ function checkDesc() {
     });
     return validDesc;
 }
+//kiểm tra hình ảnh
 function checkImg() {
   var validImg = validRequiredForm("img", "notifyImg");
   return validImg;
 }
+//kiểm tra ô quantity
 function checkQuantity() {
   var quantityRegexp = /(^[0-9])+/g;
   var validQuantity =
@@ -312,6 +319,7 @@ function checkQuantity() {
     });
   return validQuantity;
 }
+//kiểm tra tính hợp lệ của tất cả các ô 
 function checkValid() {
   var idRegexp = /(^[0-9]{1,8}$)+/g;
   var nameRegexp = /([A-z]+)([0-9]*)+/g;
@@ -368,12 +376,13 @@ function checkValid() {
   return valid;
 }
 
+//khi vừa vào trang thì call api để render product
 window.onload = async function () {
-  await fetchProductList();
-  
+  await fetchProductList();  
   console.log("productList", productList);
 };
 
+//khi click vào button close modal sản phẩm biến mất, reset lại form, ẩn lỗi
 domId('btnClose').addEventListener('click', function(){
   domId('khungThemSanPham').style.transform = "scale(0)";
   domId('form').reset();
