@@ -102,7 +102,7 @@ function renderProduct(data) {
             <td style="width: 10%">${data[i].quantity}</td>
             <td style="width: 15%">
                 <div class="tooltip">
-                    <i class="fa fa-wrench" onclick="addKhungSuaSanPham('${data[i].id}')"></i>
+                    <i class="fa fa-wrench" onclick="addKhungSuaSanPham(${data[i].id})"></i>
                     <span class="tooltiptext">Sửa</span>
                 </div>
                 <div class="tooltip">
@@ -193,6 +193,7 @@ function capNhatAnhSanPham(files, id) {
     reader.readAsDataURL(files[0]);
   }
 }
+
 // Hàm xóa sản phẩm với id và tên sản phẩm được truyền vào
 async function xoaSanPham(id, name) {
   try {
@@ -211,6 +212,144 @@ async function xoaSanPham(id, name) {
     console.error(error);
   }
 }
+
+//Lấy thông tin từ khung cập nhật sản phẩm
+function layThongTinSanPhamTuTable(id) {
+  var khung = document.getElementById("khungSuaSanPham");
+  var tr = khung.getElementsByTagName("tr");
+
+  var masp = tr[1]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("input")[0].value;
+  var type = tr[2]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("select")[0].value;
+  var name = tr[3]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("input")[0].value;
+  var image = tr[4]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("input")[0].src;
+  var des = tr[5]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("textarea")[0].value;
+  var price = tr[6]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("input")[0].value;
+  var quantity = tr[7]
+      .getElementsByTagName("td")[1]
+      .getElementsByTagName("input")[0].value;
+
+  if(isNaN(price)) {
+    alert('Giá phải là số nguyên');
+    return false;
+  }
+
+  try {
+    return {
+      "id" : masp,
+      "type": type,
+      "name": name,
+      "image": previewSrc,
+      "description": des,
+      "price": price,
+      "quantity": quantity
+    }
+  } catch(e) {
+    alert('Lỗi: ' + e.toString());
+    return false;
+  }
+}
+//Hiển thị khung cập nhật sản phẩm
+function addKhungSuaSanPham(id) {
+  var sp;
+  for(var p of productList) {
+    if(p.id == id) {
+      sp = p;
+    }
+  }
+  var s = `<span class="close" onclick="this.parentElement.style.transform = 'scale(0)';">&times;</span>
+    <table class="overlayTable table-outline table-content table-header">
+        <tr>
+            <th colspan="2">`+sp.name+`</th>
+        </tr>
+        <tr>
+            <td>Mã sản phẩm:</td>
+            <td><input type="text" value="`+sp.id+`"></td>
+        </tr>
+        <tr>
+            <td>Loại:</td>
+            <td>
+                <select>
+                    <option value="samsung" ${sp.type === "samsung" ? "selected" : ""}>samsung</option>
+                    <option value="iphone" ${sp.type === "iphone" ? "selected" : ""}>iphone</option>
+                </select>
+            </td>
+        </tr>
+            <td>Tên sẩn phẩm:</td>
+            <td><input type="text" value="`+sp.name+`"></td>
+        </tr>
+        <tr>
+            <td>Hình:</td>
+            <td>
+                <img class="hinhDaiDien" id="anhDaiDienSanPhamSua" src="`+sp.image+`">
+                <input type="file" accept="image/*" onchange="capNhatAnhSanPham(this.files, 'anhDaiDienSanPhamSua')">
+            </td>
+        </tr>
+         <tr>
+            <td>Mô tả:</td>
+            <td><textarea rows="6">`+sp.description+`</textarea></td>
+         </tr>
+        <tr>
+            <td>Giá tiền:</td>
+            <td><input type="text" value="`+sp.price+`"></td>
+        </tr>
+       <tr>
+            <td>Số lượng:</td>
+            <td><input type="text" value="`+sp.quantity+`"></td>
+        </tr>
+            <td colspan="2"  class="table-footer"> <button onclick="capNhatSanPham('`+sp.id+`')">SỬA</button> </td>
+        </tr>
+    </table>`
+  var khung = document.getElementById('khungSuaSanPham');
+  khung.innerHTML = s;
+  khung.style.transform = 'scale(1)';
+}
+
+async function capNhatSanPham(id) {
+  // Lấy thông tin sản phẩm cần cập nhật từ form
+  var spCapNhat = layThongTinSanPhamTuTable("khungSuaSanPham");
+  if (!spCapNhat) return;
+
+  // Kiểm tra sản phẩm có tồn tại trong productList hay không
+  var spCu = productList.find(sp => sp.id === id);
+  if (!spCu) {
+    alert("Không tìm thấy sản phẩm cần cập nhật.");
+    return false;
+  }
+
+  // Cập nhật thông tin sản phẩm mới
+  var spMoi = {
+    ...spCu,
+    type: spCapNhat.type,
+    name: spCapNhat.name,
+    price: spCapNhat.price,
+    description: spCapNhat.description,
+    image: spCapNhat.image,
+  };
+
+  // Gọi API để cập nhật sản phẩm
+  try {
+    const response = await axios.put(`https://63e677b27eef5b223386ae8a.mockapi.io/phones/${id}`, spMoi);
+    console.log(response.data);
+    await fetchProductList();
+    alert(`Đã cập nhật sản phẩm có id là ${id} thành công.`);
+    document.getElementById("khungSuaSanPham").style.transform = "scale(0)";
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 //validate: bắt buộc nhập giá trị
 function required(val, config) {
